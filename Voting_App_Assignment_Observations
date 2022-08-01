@@ -1,0 +1,29 @@
+1.) Delete voting pod
+	--> It spawned one more node immediately and there is no impact on accessing application, results are not imapcted.
+			Also Container ID is updated in voting application
+	
+2.) Delete worker pod
+	--> It spawned one more node immediately and there is no impact on accessing application, results are not imapcted.
+	
+3.) Delete Db Pod
+	--> results are reset, also new votes are not considered.
+	Old Votes cannot be revived, because we don't have backup
+
+#####################################################################
+[root@ip-172-31-25-118 ~]# kubectl get po
+NAME                      READY   STATUS        RESTARTS   AGE
+db-b54cd94f4-zrmvt        0/1     Terminating   0          26m
+db-b54cd94f4-zsqhr        1/1     Running       0          32s
+redis-868d64d78-fmm8s     1/1     Running       0          25m
+result-5d57b59f4b-plv9d   1/1     Running       0          24m
+vote-94849dc97-98j9k      1/1     Running       0          8m21s
+worker-dd46d7584-fnw29    0/1     Error         0          3m25s
+###########################################################################
+
+Observed below issue in DB pods :
+{"log":"ERROR:  duplicate key value violates unique constraint \"votes_id_key\"\n","stream":"stderr","time":"2022-08-01T11:01:29.869731062Z"}
+{"log":"DETAIL:  Key (id)=(dbc89164a4ee581c) already exists.\n","stream":"stderr","time":"2022-08-01T11:01:29.869749085Z"}
+
+##########################################################
+Solution : restarted result pod then it worked fine
+##########################################################

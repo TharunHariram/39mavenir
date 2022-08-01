@@ -4,11 +4,11 @@
 	
 2.) Delete worker pod
 	--> It spawned one more node immediately and there is no impact on accessing application, results are not imapcted.
-	--> Also Worker pod restarted once
 	
 3.) Delete Db Pod
 	--> results are reset, also new votes are not considered.
 	Old Votes cannot be revived, because we don't have backup
+	--> Also Worker pod restarted once
 
 #####################################################################
 [root@ip-172-31-25-118 ~]# kubectl get po
